@@ -1,1 +1,9 @@
 build
+_attic
+
+# Ctag list
+GPATH
+GRTAGS
+GTAGS
+cscope.out
+tags
