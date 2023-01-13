@@ -46,7 +46,7 @@ ACTION=="add", SUBSYSTEM=="backlight", RUN+="/bin/chgrp video $sys$devpath/brigh
 ```
 
 This line allows the participants of the `video` group to set the backlight
-brightness. Next, please add the user you wich to grant these rights to the
+brightness. Next, please add the user you wish to grant these rights to, to the
 `video` group:
 
 ```bash
