@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+
+	"github.com/cznic/mathutil"
 )
 
 type BrightnessController struct {
@@ -19,7 +21,6 @@ func NewBrightnessController(
 	brightnessCmd string,
 	actualBrightnessCmd string,
 	maxBrightnessCmd string,
-	maxBrightness int,
 ) *BrightnessController {
 	return &BrightnessController{
 		brightnessCmd:       brightnessCmd,
@@ -111,4 +112,33 @@ func (b *BrightnessController) SetBrightness(value int) error {
 	}
 
 	return nil
+}
+
+func (b *BrightnessController) SetPercentage(value int) (currentValue, maxValue int, err error) {
+	if value < -100 || value > 100 {
+		err = fmt.Errorf("Value (%d) out of range [-100, 100]", value)
+		return
+	}
+
+	maxValue, err = b.MaxBrightness()
+	if err != nil {
+		err = fmt.Errorf("Error acquiring max brightness: %w", err)
+		return
+	}
+
+	currentValue, err = b.CurrentBrightness()
+	if err != nil {
+		err = fmt.Errorf("Error acquiring current brightness: %w", err)
+		return
+	}
+
+	var (
+		onePercent  float32 = float32(maxValue) / 100.0
+		targetValue int     = currentValue + int(onePercent*float32(value))
+	)
+
+	currentValue = mathutil.Clamp(targetValue, 0, maxValue)
+	err = b.SetBrightness(currentValue)
+
+	return
 }
