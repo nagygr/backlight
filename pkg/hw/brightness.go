@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -141,4 +142,61 @@ func (b *BrightnessController) SetPercentage(value int) (currentValue, maxValue 
 	err = b.SetBrightness(currentValue)
 
 	return
+}
+
+func GetBrightnessCommandRoot(path string) (string, error) {
+	const commandRoot = "/sys/class/backlight"
+	var (
+		backLightDir string
+		dirs         []string
+		err          error
+	)
+
+	if path == "" {
+		dirs, err = getDirsIn(commandRoot)
+		if err != nil {
+			return "", fmt.Errorf("Couldn't find backlight commands: %w", err)
+		}
+
+		if len(dirs) != 1 {
+			return "", fmt.Errorf(
+				"Couldn't determine the place of the backlight command, "+
+					"Expecting to find exactly one directory under %s",
+				commandRoot,
+			)
+		}
+
+		backLightDir = filepath.Join(commandRoot, dirs[0])
+	} else {
+		backLightDir = filepath.Join(commandRoot, path)
+	}
+
+	return backLightDir, nil
+}
+
+func getDirsIn(path string) ([]string, error) {
+	var (
+		dir     *os.File
+		entries []os.DirEntry
+		dirs    []string
+		err     error
+	)
+
+	dir, err = os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("Couldn't open %s: %w", path, err)
+	}
+
+	entries, err = dir.ReadDir(-1)
+	if err != nil {
+		return nil, fmt.Errorf("Couldn't list %s: %w", path, err)
+	}
+
+	// The code doesn't check whether the entry is a directory
+	// because it typically is a link to a directory
+	for _, entry := range entries {
+		dirs = append(dirs, entry.Name())
+	}
+
+	return dirs, nil
 }

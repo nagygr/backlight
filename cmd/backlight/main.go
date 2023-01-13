@@ -9,33 +9,31 @@ import (
 	"github.com/nagygr/backlight/pkg/hw"
 )
 
-const (
-	commandRoot = "/sys/class/backlight"
-)
-
 func main() {
 	var (
 		commandDirFlag = flag.String("cmd", "", "The name of the directory containing the brightness commands, i.e. a directory under \"/sys/class/backlight\" (optional).")
 		percentageFlag = flag.Int(
 			"p", 0, "The percentage with which the backlight brightness shall be increased/decreased. If omitted: the current value is printed.",
 		)
-		backLightDir string
-		err          error
+		commandRoot string
+		err         error
 	)
 
 	flag.Parse()
 
-	if *commandDirFlag == "" {
-		backLightDir = filepath.Join(commandRoot, "intel_backlight")
-	} else {
-		backLightDir = filepath.Join(commandRoot, *commandDirFlag)
+	commandRoot, err = hw.GetBrightnessCommandRoot(*commandDirFlag)
+	if err != nil {
+		log.Fatalf(
+			"Couldn't find brightness commands: %s, please use the -cmd flag",
+			err,
+		)
 	}
 
 	var (
 		brightnessCtrl = hw.NewBrightnessController(
-			filepath.Join(backLightDir, "brightness"),
-			filepath.Join(backLightDir, "actual_brightness"),
-			filepath.Join(backLightDir, "max_brightness"),
+			filepath.Join(commandRoot, "brightness"),
+			filepath.Join(commandRoot, "actual_brightness"),
+			filepath.Join(commandRoot, "max_brightness"),
 		)
 		currentBrightness int
 		maxBrightness     int
