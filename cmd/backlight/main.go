@@ -11,9 +11,14 @@ import (
 
 func main() {
 	var (
-		commandDirFlag = flag.String("cmd", "", "The name of the directory containing the brightness commands, i.e. a directory under \"/sys/class/backlight\" (optional).")
+		commandDirFlag = flag.String(
+			"cmd", "",
+			"The name of the directory containing the brightness commands, "+
+				"i.e. a directory under \"/sys/class/backlight\" (optional).",
+		)
 		percentageFlag = flag.Int(
-			"p", 0, "The percentage with which the backlight brightness shall be increased/decreased. If omitted: the current value is printed.",
+			"p", 0, "The percentage with which the backlight brightness shall be increased/decreased. "+
+			"If omitted: the current value is printed.",
 		)
 		commandRoot string
 		err         error
