@@ -18,7 +18,7 @@ func main() {
 		)
 		percentageFlag = flag.Int(
 			"p", 0, "The percentage with which the backlight brightness shall be increased/decreased. "+
-			"If omitted: the current value is printed.",
+				"If omitted: the current value is printed.",
 		)
 		commandRoot string
 		err         error
