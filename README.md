@@ -33,3 +33,18 @@ pacman -S go            # Arch Linux, Manjaro, etc.
 dnf install golang      # Fedora, Red Hat, etc.
 apt-get install golang  # Debian, Ubuntu, etc.
 ```
+
+>	**Note**
+>
+>	Please note that, by default, the `brightness` file, which controls that
+>	backlight brightness, can only be written by root. In order to make it
+>	editable by an ordinary user, please create/edit the following file:
+>	`/etc/udev/rules.d/backlight.rules`:
+>
+>	ACTION=="add", SUBSYSTEM=="backlight", RUN+="/bin/chgrp video $sys$devpath/brightness", RUN+="/bin/chmod g+w $sys$devpath/brightness"
+>
+>	This line allows the participants of the `video` group to set the backlight
+>	brightness. Next, please add the user you wich to grant these rights to the
+>	`video` group:
+>
+>	sudo usermode -aG video <user name>
