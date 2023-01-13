@@ -36,7 +36,7 @@ apt-get install golang  # Debian, Ubuntu, etc.
 
 ### Configuring access rights
 
-Please note that, by default, the `brightness` file, which controls that
+Please note that, by default, the `brightness` file, which controls the
 backlight brightness, can only be written by root. In order to make it
 editable by an ordinary user, please create/edit the following file:
 `/etc/udev/rules.d/backlight.rules`:
