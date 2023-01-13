@@ -1,4 +1,4 @@
-.phony: all chk
+.phony: all chk run
 
 chk:
 	goimports -w ./cmd
@@ -6,4 +6,7 @@ chk:
 
 all: chk
 	go build -mod=mod -o build/backlight ./cmd/backlight
+
+run: all
+	./build/backlight
 
